@@ -1,0 +1,10 @@
+Project/.vs
+Project/Debug
+Project/Release
+Project/x64
+Project/Project/Debug
+Project/Project/Release
+Project/Project/x64
+*.filters
+*.user
+*.vcxproj
