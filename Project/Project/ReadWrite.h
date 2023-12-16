@@ -1,8 +1,11 @@
 #pragma once
 #include <windows.h>
 
-#define IOCTL_READ  0xC3506104
-#define IOCTL_WRITE 0xC350A108
+#define IOCTL_READ_MEMORY  0xC3506104
+#define IOCTL_WRITE_MEMORY 0xC350A108
+
+#define IOCTL_READ_MSR 0xC3502084
+#define IOCTL_WRITE_MSR 0xC3502088
 
 typedef unsigned __int64 QWORD;
 
@@ -12,3 +15,6 @@ BOOL readPhysicalMemory(HANDLE device, PVOID physicalAddress, DWORD chunkSize, D
 // chunkSize must be one of {1, 2, 4} (bytes)
 BOOL writePhysicalMemory(HANDLE device, PVOID physicalAddress, DWORD chunkSize, DWORD amountOfChunks, PVOID bufferToWrite);
 
+BOOL readMSR(HANDLE device, DWORD registerAddress, QWORD* store);
+
+BOOL writeMSR(HANDLE device, DWORD registerAddress, QWORD value);
