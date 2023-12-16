@@ -3,6 +3,11 @@
 #include "ReadWrite.h"
 
 
+typedef struct banana {
+    int x;
+    struct banana* y;
+} yeah;
+
 int main() {
 
 
@@ -19,4 +24,12 @@ int main() {
 
     printf("%llx, %llx\n", KeServiceDescriptorTable, KeServiceDescriptorTableShadow);
 
+
+    yeah* a = (yeah*)0x12345678;
+    writeStructMemberToPhysicalMemory(device, 0x1234, yeah, y, &a);
+
+    yeah* b;
+    readStructMemberFromPhysicalMemory(device, 0x1234, yeah, y, &b);
+
+    printf("%llx\n", b);
 }
