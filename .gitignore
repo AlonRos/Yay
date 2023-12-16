@@ -8,3 +8,4 @@ Project/Project/x64
 *.filters
 *.user
 *.vcxproj
+IDA Files/ntoskrnl*
