@@ -8,23 +8,29 @@ HANDLE CommWithDriverManager::initializeDevice(LPCWSTR deviceName) {
 	return device;
 }
 
-BOOL CommWithDriverManager::readMSR(DWORD registerAddress, QWORD* store) {
-	return DeviceIoControl(device, IOCTL_READ_MSR_DIRECTIO, &registerAddress, 4, store, 8,NULL, NULL);
+BOOL CommWithDriverManager::mapPhysicalAddressToVirtual(PVOID physicalAddress, DWORD numberOfBytes, PVOID* toStore) {
+	MapPhysicalMemoryInput* input = new MapPhysicalMemoryInput{ physicalAddress, numberOfBytes };
 
+	return DeviceIoControl(device, IOCTL_MAP_MEMORY, input, sizeof(MapPhysicalMemoryInput), toStore, sizeof(PVOID), NULL, NULL);
 }
 
-BOOL CommWithDriverManager::mapPhysicalAddressToVirtual(PVOID physicalAddress, DWORD numberOfBytes, PVOID* toStore) {
-	MapPhysicalMemoryInput* input = new MapPhysicalMemoryInput{ numberOfBytes, physicalAddress };
-	MapPhysicalMemoryOutput* output = (MapPhysicalMemoryOutput*)input;
+BOOL CommWithDriverManager::unmapPhysicalAddressToVirtual(PVOID physicalAddress) {
 
-	BOOL b = DeviceIoControl(
-		device, IOCTL_MAP_MEMORY,
-		input, sizeof(MapPhysicalMemoryInput),
-		output, sizeof(MapPhysicalMemoryOutput),
-		NULL, NULL
-	);
-	
-	*toStore = output->baseAddress;
+	return DeviceIoControl(device, IOCTL_UNMAP_MEMORY, &physicalAddress, sizeof(PVOID), NULL, NULL, NULL, NULL);
+}
+
+BOOL CommWithDriverManager::readMSR(DWORD registerAddress, QWORD* store) {
+	readMSRSBuffer* bufferptr = new readMSRSBuffer{ registerAddress };
+
+	BOOL b = DeviceIoControl(device, IOCTL_READ_MSR, bufferptr, sizeof(*bufferptr), bufferptr, sizeof(*bufferptr), NULL, NULL);
+
+	*(DWORD*)store = bufferptr->lowDword;
+	*((DWORD*)store + 1) = bufferptr->highDword;
 
 	return b;
+}
+
+BOOL CommWithDriverManager::writeMSR(DWORD registerAddress, QWORD value) {
+	int x = ~15;
+
 }

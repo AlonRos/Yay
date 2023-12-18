@@ -7,18 +7,18 @@
 int main() {
     CommWithDriverManager manager;
     
-    HANDLE device = manager.initializeDevice(L"\\\\.\\DIRECTIO64");
+    HANDLE device = manager.initializeDevice(L"\\\\.\\RTCore64");
     
-    printf("%d, %d\n", device);
+    printf("%d\n", device);
 
-    PVOID baseAddress;
-    BOOL b = manager.mapPhysicalAddressToVirtual((PVOID)0x1234, 16, &baseAddress);
+    PVOID KiSystemCall64;
+    BOOL b = manager.readMSR(0xc0000082, (QWORD*) &KiSystemCall64);
 
     if (!b) {
         printf("%d\n", GetLastError());
     }
     
-    printf("%llx", *(QWORD*)baseAddress);
+    printf("%llx", KiSystemCall64);
 
     //HANDLE device = CreateFileW(L"\\\\.\\NTIOLib_MB", GENERIC_READ | GENERIC_WRITE, NULL, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
     //

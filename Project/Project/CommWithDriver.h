@@ -2,8 +2,14 @@
 #include <windows.h>
 #include <cstdint>
 
-#define IOCTL_MAP_MEMORY 0x80112044
-#define IOCTL_READ_MSR_DIRECTIO 0x80112060
+#define IOCTL_MAP_MEMORY   0x80002000
+#define IOCTL_UNMAP_MEMORY 0x80002004
+
+#define IOCTL_READ_MSR  0x80002030
+#define IOCTL_WRITE_MSR 0x80002030
+
+
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
 
 typedef unsigned __int64 QWORD;
 
@@ -13,7 +19,7 @@ private:
 
 	HANDLE device;
 	struct MapPhysicalMemoryInput;
-	struct MapPhysicalMemoryOutput;
+	struct readMSRSBuffer;
 
 public:
 
@@ -21,9 +27,11 @@ public:
 
 	BOOL mapPhysicalAddressToVirtual(PVOID physicalAddress, DWORD numberOfBytes, PVOID* toStore);
 
+	BOOL unmapPhysicalAddressToVirtual(PVOID physicalAddress);
+
 	BOOL readMSR(DWORD registerAddress, QWORD* store);
 
-	BOOL writeMSR(HANDLE device, DWORD registerAddress, QWORD value);
+	BOOL writeMSR(DWORD registerAddress, QWORD value);
 
 };
 

@@ -5,29 +5,23 @@
 
 typedef unsigned __int64 QWORD;
 
+
 struct CommWithDriverManager::MapPhysicalMemoryInput {
-    uint32_t : 32;
+    PVOID physicalAddress; 
 
     DWORD numberOfBytes;
 
-    PVOID physicalAddress;
+    int32_t : 32;
 
-    uint64_t : 64;
+};
 
-    const char flag = 1;
+struct CommWithDriverManager::readMSRSBuffer {
+    DWORD registerAddress;
+
+    DWORD highDword;
+
+    DWORD lowDword;
 
 };
 
 
-struct CommWithDriverManager::MapPhysicalMemoryOutput {
-    uint32_t : 32;
-
-    uint32_t : 32;
-
-    PVOID physicalAddress;
-
-    PVOID baseAddress;
-
-    uint8_t : 8;
-
-};
