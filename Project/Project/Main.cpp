@@ -2,34 +2,35 @@
 #include <iostream>
 #include "ReadWrite.h"
 
-
-typedef struct banana {
-    int x;
-    struct banana* y;
-} yeah;
+#include "CommWithDriver.h"
 
 int main() {
+    CommWithDriverManager manager;
+    
+    HANDLE device = manager.initializeDevice(L"\\\\.\\DIRECTIO64");
+    
+    printf("%d, %d\n", device);
 
+    PVOID baseAddress;
+    BOOL b = manager.mapPhysicalAddressToVirtual((PVOID)0x1234, 16, &baseAddress);
 
-    HANDLE device = CreateFileW(L"\\\\.\\NTIOLib_MB", GENERIC_READ | GENERIC_WRITE, NULL, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
+    if (!b) {
+        printf("%d\n", GetLastError());
+    }
+    
+    printf("%llx", *(QWORD*)baseAddress);
 
-    PVOID KiSystemCall64;
-    readMSR(device, 0xc0000082, (QWORD*)&KiSystemCall64); //0xc0000082
-    printf("%llx\n", KiSystemCall64);
+    //HANDLE device = CreateFileW(L"\\\\.\\NTIOLib_MB", GENERIC_READ | GENERIC_WRITE, NULL, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
+    //
+    //PVOID KiSystemCall64;
+    //readMSR(device, 0xc0000082, (QWORD*)&KiSystemCall64); //0xc0000082
+    //printf("%llx\n", KiSystemCall64);
+    //
+    //
+    //PVOID KeServiceDescriptorTable = (BYTE*)KiSystemCall64 + 0x374 + 0x9f0b4c;
+    //PVOID KeServiceDescriptorTableShadow = (BYTE*)KiSystemCall64 + 0x37b + 0x8ebcc5;
+    // 
+    //
+    //printf("%llx, %llx\n", KeServiceDescriptorTable, KeServiceDescriptorTableShadow);
 
-
-    PVOID KeServiceDescriptorTable = (BYTE*)KiSystemCall64 + 0x374 + 0x9f0b4c;
-    PVOID KeServiceDescriptorTableShadow = (BYTE*)KiSystemCall64 + 0x37b + 0x8ebcc5;
-     
-
-    printf("%llx, %llx\n", KeServiceDescriptorTable, KeServiceDescriptorTableShadow);
-
-
-    yeah* a = (yeah*)0x12345678;
-    writeStructMemberToPhysicalMemory(device, 0x1234, yeah, y, &a);
-
-    yeah* b;
-    readStructMemberFromPhysicalMemory(device, 0x1234, yeah, y, &b);
-
-    printf("%llx\n", b);
 }
