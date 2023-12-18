@@ -6,7 +6,7 @@
 #define IOCTL_UNMAP_MEMORY 0x80002004
 
 #define IOCTL_READ_MSR  0x80002030
-#define IOCTL_WRITE_MSR 0x80002030
+#define IOCTL_WRITE_MSR 0x80002034
 
 
 #define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
@@ -20,6 +20,7 @@ private:
 	HANDLE device;
 	struct MapPhysicalMemoryInput;
 	struct readMSRSBuffer;
+	struct writeMSRInput;
 
 public:
 
@@ -31,7 +32,7 @@ public:
 
 	BOOL readMSR(DWORD registerAddress, QWORD* store);
 
-	BOOL writeMSR(DWORD registerAddress, QWORD value);
+	BOOL writeDwordToMSR(DWORD registerAddress, DWORD value);
 
 };
 

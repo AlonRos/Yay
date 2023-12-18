@@ -11,8 +11,13 @@ int main() {
     
     printf("%d\n", device);
 
+    BOOL b = manager.writeDwordToMSR(0x40000000, 0x12345678);
+    if (!b) {
+        printf("%d\n", GetLastError());
+    }
+
     PVOID KiSystemCall64;
-    BOOL b = manager.readMSR(0xc0000082, (QWORD*) &KiSystemCall64);
+    b = manager.readMSR(0x40000000, (QWORD*) &KiSystemCall64);
 
     if (!b) {
         printf("%d\n", GetLastError());

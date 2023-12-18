@@ -24,4 +24,10 @@ struct CommWithDriverManager::readMSRSBuffer {
 
 };
 
+struct CommWithDriverManager::writeMSRInput {
+    DWORD registerAddress;
 
+    int32_t : 32;
+
+    DWORD value;
+};

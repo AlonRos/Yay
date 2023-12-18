@@ -30,7 +30,9 @@ BOOL CommWithDriverManager::readMSR(DWORD registerAddress, QWORD* store) {
 	return b;
 }
 
-BOOL CommWithDriverManager::writeMSR(DWORD registerAddress, QWORD value) {
-	int x = ~15;
+BOOL CommWithDriverManager::writeDwordToMSR(DWORD registerAddress, DWORD value) {
+	writeMSRInput* inputptr = new writeMSRInput{ registerAddress, value };
+
+	return DeviceIoControl(device, IOCTL_WRITE_MSR, inputptr, sizeof(*inputptr), NULL, NULL, NULL, NULL);
 
 }
