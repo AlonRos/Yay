@@ -31,3 +31,9 @@ struct CommWithDriverManager::writeMSRInput {
 
     DWORD value;
 };
+
+struct PVAddress_t {
+    PVOID physicalAddress;
+
+    PVOID virtualAddress;
+};

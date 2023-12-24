@@ -14,9 +14,9 @@ BOOL CommWithDriverManager::mapPhysicalAddressToVirtual(PVOID physicalAddress, D
 	return DeviceIoControl(device, IOCTL_MAP_MEMORY, input, sizeof(MapPhysicalMemoryInput), toStore, sizeof(PVOID), NULL, NULL);
 }
 
-BOOL CommWithDriverManager::unmapPhysicalAddressToVirtual(PVOID physicalAddress) {
+BOOL CommWithDriverManager::unmapPhysicalAddressToVirtual(PVOID baseAddress) {
 
-	return DeviceIoControl(device, IOCTL_UNMAP_MEMORY, &physicalAddress, sizeof(PVOID), NULL, NULL, NULL, NULL);
+	return DeviceIoControl(device, IOCTL_UNMAP_MEMORY, &baseAddress, sizeof(PVOID), NULL, NULL, NULL, NULL);
 }
 
 BOOL CommWithDriverManager::readMSR(DWORD registerAddress, QWORD* store) {
