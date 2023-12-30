@@ -1,39 +1,17 @@
 #pragma once
 #include <windows.h>
-#include  <cstdint>
+#include <cstdint>
 #include "CommWithDriver.h"
 
 typedef unsigned __int64 QWORD;
 
 
-struct CommWithDriverManager::MapPhysicalMemoryInput {
+struct CommWithDriverManager::RWPhysicalMemoryInput {
     PVOID physicalAddress; 
 
-    DWORD numberOfBytes;
+    DWORD chunkSize;
 
-    int32_t : 32;
-
-};
-
-struct CommWithDriverManager::readMSRSBuffer {
-    DWORD registerAddress;
-
-    DWORD highDword;
-
-    DWORD lowDword;
+    DWORD amountOfChunks;
 
 };
 
-struct CommWithDriverManager::writeMSRInput {
-    DWORD registerAddress;
-
-    int32_t : 32;
-
-    DWORD value;
-};
-
-struct PVAddress_t {
-    PVOID physicalAddress;
-
-    PVOID virtualAddress;
-};
