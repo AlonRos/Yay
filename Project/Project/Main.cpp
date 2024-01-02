@@ -50,8 +50,10 @@ DWORD* getKMPTable(BYTE* word, DWORD wordLength) {
     return table;
 }
 
+DWORD j = 0;
+
 BOOL searchBufferInPhysicalMemory(BYTE* startAddress, DWORD searchLength, BYTE* buffer, DWORD bufferLength, CommWithDriverManager& manager, PVOID& storePhysicalAddress) {
-    DWORD j = 0;
+    
     int k = 0;
     DWORD* table = getKMPTable(buffer, bufferLength);
 
@@ -59,14 +61,18 @@ BOOL searchBufferInPhysicalMemory(BYTE* startAddress, DWORD searchLength, BYTE* 
     DWORD lastReadIndex = 1;
 
     SHORT counter = 0;
+
     while (j - k <= searchLength - bufferLength) {
+        if (j == 0x2000) j = 0x4000;  // BSOD when reading from addres in the range [0x2000, 0x3fff]
+        //printf("j = %d, k = %d\n", j, k);
+
         if (j != lastReadIndex) {
             printf("%p\n", startAddress + j);
             manager.readPhysicalMemory(startAddress + j, 1, 1, &currentByte);
             
             lastReadIndex = j;
         }
-        printf("%x\n", currentByte);
+
         if (buffer[k] == currentByte) {
             ++j;
             ++k;
@@ -75,7 +81,6 @@ BOOL searchBufferInPhysicalMemory(BYTE* startAddress, DWORD searchLength, BYTE* 
                 return TRUE;
             }
         }
-        
         else {
             k = table[k];
             if (k < 0) {
@@ -83,13 +88,9 @@ BOOL searchBufferInPhysicalMemory(BYTE* startAddress, DWORD searchLength, BYTE* 
                 k = 0;
             }
         }
-        counter++;
-        if (counter == 3000) {
-            Sleep(100);
-            counter = 0;
-        }
 
     }
+    printf("yay6\n");
     return FALSE;
 
 }
